@@ -1,35 +1,35 @@
 import expect from 'expect.js';
 
 import { AdapterManager } from 'mosaic-adapters';
-import { DataSet, Resource } from 'mosaic-dataset';
+import { DataSet, Data } from 'mosaic-dataset';
 import { GeoJsonAdapter, GeoJsonGenerator } from '..';
 
 const BBOX = [1, 40, 3, 60];
 describe('GeoJsonAdapter', function() {
     let generator = new GeoJsonGenerator({ bbox : BBOX, precision: 4 });
     
-    it('should provide transparent access (to read/write) to the underlying resource data', function(){
+    it('should provide transparent access (to read/write) to the underlying data', function(){
         let adapters = new AdapterManager();
-        let resource = new Resource({adapters});
+        let item = new Data({adapters});
         let data = generator.randomPoint();
-        let adapter = resource.getAdapter(GeoJsonAdapter);
+        let adapter = item.getAdapter(GeoJsonAdapter);
         adapter.data = data;
         expect(adapter.data).to.be(data);
-        expect(resource.data).to.be(data);
+        expect(item.data).to.be(data);
         
         let newData = generator.randomPoint();
-        resource.data = newData;
+        item.data = newData;
         expect(adapter.data).to.be(newData);
-        expect(resource.data).to.be(newData);
+        expect(item.data).to.be(newData);
     });
     
     
-    it('should provide access to bounding boxes of individual resources', function(){
+    it('should provide access to bounding boxes of individual items', function(){
         let adapters = new AdapterManager();
-        let resource = new Resource({adapters});
+        let item = new Data({adapters});
         let data = generator.randomPoint();
-        resource.data = data;
-        let adapter = resource.getAdapter(GeoJsonAdapter);
+        item.data = data;
+        let adapter = item.getAdapter(GeoJsonAdapter);
         expect(!!adapter).to.be(true);
         expect(adapter.data).to.be(data);
         let bbox = adapter.boundingBox;
@@ -42,11 +42,11 @@ describe('GeoJsonAdapter', function() {
     it('should provide access to bounding boxes for datasets', function(){
         let dataSet = new DataSet();
         let points = generator.randomPoints(100);
-        dataSet.resources = points;
+        dataSet.items = points;
         
         let adapter = dataSet.getAdapter(GeoJsonAdapter);
         expect(!!adapter).to.be(true);
-        expect(adapter.resource).to.be(dataSet);
+        expect(adapter.item).to.be(dataSet);
 
         let bbox = adapter.boundingBox;
         expect(!!bbox).to.be(true);

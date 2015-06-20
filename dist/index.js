@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("mosaic-adapters"), require("mosaic-intents"));
+		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define(["mosaic-adapters", "mosaic-intents"], factory);
+		define(factory);
 	else {
-		var a = typeof exports === 'object' ? factory(require("mosaic-adapters"), require("mosaic-intents")) : factory(root["mosaic-adapters"], root["mosaic-intents"]);
+		var a = factory();
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
-})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_4__) {
+})(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -62,36 +62,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _libResource = __webpack_require__(1);
+	var _libGeoJsonAdapter = __webpack_require__(1);
 
-	var _libResource2 = _interopRequireDefault(_libResource);
+	var _libGeoJsonAdapter2 = _interopRequireDefault(_libGeoJsonAdapter);
 
-	var _libDataSet = __webpack_require__(3);
+	var _libGeoJsonGenerator = __webpack_require__(5);
 
-	var _libDataSet2 = _interopRequireDefault(_libDataSet);
+	var _libGeoJsonGenerator2 = _interopRequireDefault(_libGeoJsonGenerator);
 
-	var _libDerivativeDataSet = __webpack_require__(5);
+	var _libGeoJsonUtils = __webpack_require__(2);
 
-	var _libDerivativeDataSet2 = _interopRequireDefault(_libDerivativeDataSet);
-
-	var _libDataSetFiltered = __webpack_require__(6);
-
-	var _libDataSetFiltered2 = _interopRequireDefault(_libDataSetFiltered);
-
-	var _libDataSetPaginated = __webpack_require__(7);
-
-	var _libDataSetPaginated2 = _interopRequireDefault(_libDataSetPaginated);
+	var _libGeoJsonUtils2 = _interopRequireDefault(_libGeoJsonUtils);
 
 	exports['default'] = {
-	    Resource: _libResource2['default'],
-	    DataSet: _libDataSet2['default'],
-	    DerivativeDataSet: _libDerivativeDataSet2['default'],
-	    DataSetFiltered: _libDataSetFiltered2['default'],
-	    DataSetPaginated: _libDataSetPaginated2['default'],
-	    registerDataSetAdapters: function registerDataSetAdapters(adapters) {
-	        adapters.registerAdapter(_libDataSet2['default'], _libDataSetFiltered2['default']);
-	        adapters.registerAdapter(_libDataSet2['default'], _libDataSetPaginated2['default']);
-	    }
+	    GeoJsonAdapter: _libGeoJsonAdapter2['default'],
+	    GeoJsonGenerator: _libGeoJsonGenerator2['default'],
+	    GeoJsonUtils: _libGeoJsonUtils2['default']
 	};
 	module.exports = exports['default'];
 
@@ -107,195 +93,79 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	var _GeoJsonUtils = __webpack_require__(2);
 
-	var _mosaicAdapters = __webpack_require__(2);
+	var _GeoJsonUtils2 = _interopRequireDefault(_GeoJsonUtils);
 
-	var idCounter = 0;
 	/**
-	 * 
+	 * This adapters treats all data set as GeoJson objects and provides some
+	 * utility methods.
 	 */
 
-	var Resource = (function (_Adaptable) {
+	var GeoJsonAdapter = (function () {
 
 	    /**
-	     * This constructor initializes this resource and sets the internal data.
-	     * 
-	     * @param options.adapters
-	     *            an adapter manager used to generate resource adapters
-	     * @param options.data
-	     *            the data object
+	     * The main constructor initializing the internal data field.
 	     */
 
-	    function Resource(options) {
-	        var _get2;
+	    function GeoJsonAdapter(options, item) {
+	        _classCallCheck(this, GeoJsonAdapter);
 
-	        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	            args[_key - 1] = arguments[_key];
-	        }
-
-	        _classCallCheck(this, Resource);
-
-	        (_get2 = _get(Object.getPrototypeOf(Resource.prototype), 'constructor', this)).call.apply(_get2, [this, options].concat(args));
-	        this.data = options.data;
+	        options = options || {};
+	        this.item = item || options.item;
 	    }
 
-	    _inherits(Resource, _Adaptable);
+	    _createClass(GeoJsonAdapter, [{
+	        key: 'item',
 
-	    _createClass(Resource, [{
-	        key: 'type',
-
-	        /**
-	         * Returns the type key for this resource. This is a shortcut for the
-	         * "getTypeKey" method.
-	         */
+	        /** getter/setter methods for the "item" property */
 	        get: function () {
-	            return this.getTypeKey();
-	        }
-	    }, {
-	        key: 'getTypeKey',
-
-	        /**
-	         * Returns the type key for this resource.
-	         */
-	        value: function getTypeKey() {
-	            var type = this.get('properties.type') || this.get('type');
-	            if (type) {
-	                type = _mosaicAdapters.TypeKey.getTypeKey(type);
-	            } else {
-	                // Use the class hierarchy if type is not defined in the data
-	                type = _mosaicAdapters.TypeKey.getTypeKey.apply(this);
-	            }
-	            return type;
+	            return this._item || {};
+	        },
+	        set: function (item) {
+	            this._item = item || {};
 	        }
 	    }, {
 	        key: 'data',
 
-	        /**
-	         * Returns the internal data managed by this resource.
-	         */
+	        /** Returns the data object associated with the underlying data object */
 	        get: function () {
-	            return this._data;
+	            return this.item.data;
 	        },
-
-	        /**
-	         * Associates a new data object with this resource.
-	         */
-	        set: function (d) {
-	            this._data = d || {};
-	            delete this._id;
-	            return this._data;
+	        set: function (data) {
+	            this.setData(data);
 	        }
 	    }, {
-	        key: 'id',
+	        key: 'setData',
+	        value: function setData(data) {
+	            var item = this.item;
+	            if (item.setData) {
+	                return item.setData(data);
+	            } else {
+	                return item.data = data;
+	            }
+	        }
+	    }, {
+	        key: 'boundingBox',
 
-	        /**
-	         * Returns the resource identifier. By default this method seeks the
-	         * identifier in the "id" field of the underlying data object. If there is
-	         * no such an identifier then this method generates a local ID stored in
-	         * this resource object.
-	         */
+	        /** Returns a bounding box around the underlying item. */
 	        get: function () {
-	            var id = this.data.id;
-	            if (id === undefined) {
-	                id = this._id = this._id || idCounter++;
-	            }
-	            return id;
-	        }
-	    }, {
-	        key: 'get',
-
-	        /**
-	         * Returns a value corresponding to the specified path.
-	         * 
-	         * @param path
-	         *            an segment name array or a string path where individual
-	         *            segments are separated by the '.' symbol
-	         */
-	        value: function get(path) {
-	            if (typeof path === 'string') {
-	                var array = path.split('.');
-	                return this.get(array);
-	            }
-	            var data = this.data;
-	            var len = path ? path.length : 0;
-	            var i = undefined;
-	            for (i = 0; data && i < len; i++) {
-	                var segment = path[i];
-	                data = data[segment];
-	            }
-	            return i === len ? data : null;
-	        }
-	    }, {
-	        key: 'set',
-
-	        /**
-	         * Sets a new value for the specified path.
-	         */
-	        value: function set(path, value) {
-	            if (typeof path === 'string') {
-	                var array = path.split('.');
-	                return this.set(array, value);
-	            }
-	            var data = this.data;
-	            var len = path ? path.length : 0;
-	            var i = undefined;
-	            for (i = 0; i < len - 1; i++) {
-	                var segment = path[i];
-	                var next = data[segment];
-	                if (!next) break;
-	                data = next;
-	            }
-	            // Add missing objects
-	            for (; i < len - 1; i++) {
-	                var segment = path[i];
-	                data = data[segment] = {};
-	            }
-	            if (data) {
-	                var segment = path[path.length - 1];
-	                data[segment] = value;
-	            }
-	            return this;
-	        }
-	    }, {
-	        key: 'visit',
-
-	        /**
-	         * Visits this resource
-	         * 
-	         * @param visitor.before
-	         *            this method is called before this resource is visited
-	         * @param visitor.after
-	         *            this method is called after this resource is visited
-	         */
-	        value: function visit(visitor) {
-	            if (visitor.before) {
-	                visitor.before.call(visitor, this);
-	            }
-	            if (visitor.after) {
-	                visitor.after.call(visitor, this);
-	            }
+	            return _GeoJsonUtils2['default'].getBoundingBox(this.item);
 	        }
 	    }]);
 
-	    return Resource;
-	})(_mosaicAdapters.Adaptable);
+	    return GeoJsonAdapter;
+	})();
 
-	exports['default'] = Resource;
+	exports['default'] = GeoJsonAdapter;
 	module.exports = exports['default'];
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
-
-/***/ },
-/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -303,361 +173,298 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, '__esModule', {
 	    value: true
 	});
-	var _bind = Function.prototype.bind;
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	var _turfExtent = __webpack_require__(3);
 
-	var _mosaicIntents = __webpack_require__(4);
+	var _turfExtent2 = _interopRequireDefault(_turfExtent);
 
-	var _Resource2 = __webpack_require__(1);
+	/**
+	 * This adapters treats all Data instances as GeoJson objects and provides some
+	 * utility methods.
+	 */
 
-	var _Resource3 = _interopRequireDefault(_Resource2);
-
-	var DataSet = (function (_Resource) {
-
-	    /**
-	     * Class constructor. It defines resource array and registers event
-	     * listeners updating internal resource indexes.
-	     */
-
-	    function DataSet(options) {
-	        var _get2;
-
-	        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	            args[_key - 1] = arguments[_key];
-	        }
-
-	        _classCallCheck(this, DataSet);
-
-	        (_get2 = _get(Object.getPrototypeOf(DataSet.prototype), 'constructor', this)).call.apply(_get2, [this, options].concat(args));
-	        (0, _mosaicIntents.Intents)(this);
-	        this.options = options || {};
-	        this.resources = this.options.resources;
+	var GeoJsonUtils = (function () {
+	    function GeoJsonUtils() {
+	        _classCallCheck(this, GeoJsonUtils);
 	    }
 
-	    _inherits(DataSet, _Resource);
-
-	    _createClass(DataSet, [{
-	        key: 'close',
-
-	        /** Do-nothing destructor */
-	        value: function close() {}
-	    }, {
-	        key: '_getOptionsValue',
-
-	        /** Returns an options value. */
-	        value: function _getOptionsValue(key, defaultValue) {
-	            return this.options[key] || defaultValue;
-	        }
-	    }, {
-	        key: 'resources',
+	    _createClass(GeoJsonUtils, null, [{
+	        key: 'getBoundingBox',
 
 	        /**
-	         * Returns a list of all managed resources.
+	         * Returns a bounding box around the underlying data object.
 	         */
-	        get: function () {
-	            return this._resources;
-	        },
-
-	        /**
-	         * Sets new resources. If the specified list contains non-resource instances
-	         * then they are wrapped in the Resource container.
-	         */
-	        set: function (list) {
-	            return this.setResources(list);
-	        }
-	    }, {
-	        key: 'setResources',
-
-	        /**
-	         * Sets new resources. If the specified list contains non-resource instances
-	         * then they are wrapped in the Resource container.
-	         */
-	        value: function setResources(list) {
-	            return this.update(function () {
-	                this._resources = [];
-	                this._index = {};
-	                var len = list ? list.length || 0 : 0;
-	                for (var pos = 0; pos < len; pos++) {
-	                    var r = this._wrap(list[pos]);
-	                    this._resources[pos] = r;
-	                    this._index[r.id] = [r, pos];
+	        value: function getBoundingBox(item) {
+	            var bbox;
+	            item.visit({
+	                before: function before(r) {
+	                    var data = r.data;
+	                    if (!data.geometry) return;
+	                    var box = (0, _turfExtent2['default'])(data.geometry);
+	                    if (bbox) {
+	                        box = [Math.min(bbox[0], box[0]), Math.min(bbox[1], box[1]), Math.max(bbox[2], box[2]), Math.max(bbox[3], box[3])];
+	                    }
+	                    bbox = box;
 	                }
 	            });
+	            return bbox;
 	        }
 	    }, {
-	        key: 'get',
+	        key: 'isEmptyBox',
 
 	        /**
-	         * Returns an entity from the specified position. Basically it returns value
-	         * this.resources[pos].
-	         */
-	        value: function get(pos) {
-	            var resources = this.resources;
-	            if (pos < 0 || pos >= resources.length) return;
-	            return resources[pos];
-	        }
-	    }, {
-	        key: 'has',
-
-	        /**
-	         * Returns <code>true</code> if
-	         */
-	        value: function has(d) {
-	            return this.indexOf(d) >= 0;
-	        }
-	    }, {
-	        key: 'set',
-
-	        /**
-	         * Sets a new value in the specified position
-	         */
-	        value: function set(d, pos) {
-	            return this.update(function () {
-	                if (pos === undefined) {
-	                    pos = this._resources.length;
-	                }
-	                pos = Math.max(0, Math.min(this._resources.length, +pos));
-	                var prev = this._resources[pos];
-	                if (prev) {
-	                    delete this._index[prev[0].id];
-	                }
-	                var r = this._wrap(d);
-	                this._resources[pos] = r;
-	                this._index[r.id] = [r, pos];
-	            });
-	        }
-	    }, {
-	        key: 'add',
-
-	        /**
-	         * Adds a new resource at the end of the list.
-	         */
-	        value: function add(d) {
-	            return this.set(d, this.size());
-	        }
-	    }, {
-	        key: 'pos',
-
-	        /**
-	         * Returns position (index) of the specified resource.
-	         */
-	        value: function pos(d) {
-	            if (!d) return -1;
-	            d = this._wrap(d);
-	            return this.posById(d.id);
-	        }
-	    }, {
-	        key: 'posById',
-
-	        /** Returns position of the element corresponding to the specified ID. */
-	        value: function posById(id) {
-	            var slot = this._index[id];
-	            return slot ? slot[1] : -1;
-	        }
-	    }, {
-	        key: 'remove',
-
-	        /**
-	         * Removes a resource from the specified position
-	         */
-	        value: function remove(pos) {
-	            return this.update(function () {
-	                var resources = this._resources;
-	                if (pos === undefined || pos < 0 || pos >= resources.length) {
-	                    return false;
-	                }
-	                var r = resources[pos];
-	                delete this._index[r.id];
-	                resources.splice(pos, 1);
-	                for (var i = pos; i < resources.length; i++) {
-	                    var _r = resources[i];
-	                    var slot = this._index[_r.id];
-	                    if (!slot) throw new Error('DataSet index is broken');
-	                    slot[1]--;
-	                }
-	                return true;
-	            });
-	        }
-	    }, {
-	        key: 'removeById',
-
-	        /**
-	         * Removes an resource corresponding to the specified identifier.
-	         */
-	        value: function removeById(id) {
-	            var pos = this.posById(id);
-	            return this.remove(pos);
-	        }
-	    }, {
-	        key: 'length',
-
-	        /**
-	         * Returns the number of elements in this set.
-	         */
-	        get: function () {
-	            return this.resources.length;
-	        }
-	    }, {
-	        key: 'size',
-
-	        /**
-	         * Returns the size of this set (length of the underlying array with
-	         * resources).
-	         */
-	        value: function size() {
-	            return this.resources.length;
-	        }
-	    }, {
-	        key: 'each',
-
-	        /**
-	         * Iterates over all resources and calls the specified visitor function in
-	         * the given context. If the specified visitor function returns
-	         * <code>false</code> then the iteration processes stops.
-	         */
-	        value: function each(visitor, context) {
-	            return this.resources.forEach(visitor, context);
-	        }
-	    }, {
-	        key: 'map',
-
-	        /**
-	         * Calls the specified visitor function with each resource in the list and
-	         * returns a list of results. If the visitor returns an undefined value then
-	         * it is not added to the resulting list.
-	         */
-	        value: function map(visitor, context) {
-	            return this.resources.map(visitor, context);
-	        }
-	    }, {
-	        key: 'filter',
-
-	        /**
-	         * Calls the specified visitor function with each resource in the list and
-	         * returns a list of results. If the visitor returns an undefined value then
-	         * it is not added to the resulting list.
-	         */
-	        value: function filter(visitor, context) {
-	            return this.resources.filter(visitor, context);
-	        }
-	    }, {
-	        key: 'byId',
-
-	        /**
-	         * Returns a resource by its identifier.
-	         */
-	        value: function byId(id) {
-	            var slot = this._index[id];
-	            return slot ? slot[0] : undefined;
-	        }
-	    }, {
-	        key: 'update',
-
-	        /**
-	         * Performs an update action on this dataset
-	         */
-	        value: function update(action) {
-	            return this.action('update', function (intent) {
-	                action.call(this);
-	                return true;
-	            });
-	        }
-	    }, {
-	        key: '_wrap',
-
-	        /**
-	         * Checks that the specified object has a good type. Otherwise it wraps it
-	         * in a Resource instance.
-	         */
-	        value: function _wrap(data) {
-	            var resource = data;
-	            var ResourceType = this.ResourceType;
-	            if (!(data instanceof ResourceType)) {
-	                resource = new ResourceType({
-	                    adapters: this.adapters,
-	                    data: data
-	                });
-	            }
-	            return resource;
-	        }
-	    }, {
-	        key: 'createNew',
-
-	        /**
-	         * Creates and returns a new empty copy of this data set.
-	         */
-	        value: function createNew(options) {
-	            for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-	                args[_key2 - 1] = arguments[_key2];
-	            }
-
-	            var Type = this.constructor;
-	            if (!options.adapters) {
-	                options.adapters = this.adapters;
-	            }
-	            var result = new (_bind.apply(Type, [null].concat([options], args)))();
-	            Type.Resource = this.Resource;
-	            return result;
-	        }
-	    }, {
-	        key: 'ResourceType',
-
-	        /**
-	         * Returns the default type of instances managed by this data set.
-	         */
-	        get: function () {
-	            return _Resource3['default'];
-	        }
-	    }, {
-	        key: 'visit',
-
-	        /**
-	         * Visits this resource
+	         * Returns <code>true</code> if the specified bounding box is empty.
 	         * 
-	         * @param visitor.before
-	         *            this method is called before this resource is visited
-	         * @param visitor.after
-	         *            this method is called after this resource is visited
+	         * @see http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude/8674#8674
 	         */
-	        value: function visit(visitor) {
-	            var result;
-	            if (visitor.before) {
-	                result = visitor.before.call(visitor, this);
-	            }
-	            if (result !== 'false') {
-	                this.each(function (resource) {
-	                    return resource.visit(visitor);
-	                });
-	            }
-	            if (visitor.after) {
-	                visitor.after.call(visitor, this);
-	            }
-	            return result;
+	        value: function isEmptyBox(box, precision) {
+	            if (!box) return true;
+	            var first = this.round(box[0], precision);
+	            var second = this.round(box[1], precision);
+	            var third = this.round(box[2], precision);
+	            var fourth = this.round(box[3], precision);
+	            return first === third && second === fourth;
+	        }
+	    }, {
+	        key: 'round',
+
+	        /**
+	         * @see http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude/8674#8674
+	         */
+	        value: function round(val, precision) {
+	            precision = precision || 6;
+	            return (+val).toFixed(precision);
 	        }
 	    }]);
 
-	    return DataSet;
-	})(_Resource3['default']);
+	    return GeoJsonUtils;
+	})();
 
-	exports['default'] = DataSet;
-
-	_mosaicIntents.Intents.addTo(DataSet);
+	exports['default'] = GeoJsonUtils;
 	module.exports = exports['default'];
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var each = __webpack_require__(4).coordEach;
+
+	/**
+	 * Takes any {@link GeoJSON} object, calculates the extent of all input features, and returns a bounding box.
+	 *
+	 * @module turf/extent
+	 * @category measurement
+	 * @param {GeoJSON} input any valid GeoJSON Object
+	 * @return {Array<number>} the bounding box of `input` given
+	 * as an array in WSEN order (west, south, east, north)
+	 * @example
+	 * var input = {
+	 *   "type": "FeatureCollection",
+	 *   "features": [
+	 *     {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [114.175329, 22.2524]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [114.170007, 22.267969]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [114.200649, 22.274641]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [114.186744, 22.265745]
+	 *       }
+	 *     }
+	 *   ]
+	 * };
+	 *
+	 * var bbox = turf.extent(input);
+	 *
+	 * var bboxPolygon = turf.bboxPolygon(bbox);
+	 *
+	 * var resultFeatures = input.features.concat(bboxPolygon);
+	 * var result = {
+	 *   "type": "FeatureCollection",
+	 *   "features": resultFeatures
+	 * };
+	 *
+	 * //=result
+	 */
+	module.exports = function (layer) {
+	  var extent = [Infinity, Infinity, -Infinity, -Infinity];
+	  each(layer, function (coord) {
+	    if (extent[0] > coord[0]) extent[0] = coord[0];
+	    if (extent[1] > coord[1]) extent[1] = coord[1];
+	    if (extent[2] < coord[0]) extent[2] = coord[0];
+	    if (extent[3] < coord[1]) extent[3] = coord[1];
+	  });
+	  return extent;
+	};
 
 /***/ },
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
+	/**
+	 * Lazily iterate over coordinates in any GeoJSON object, similar to
+	 * Array.forEach.
+	 *
+	 * @param {Object} layer any GeoJSON object
+	 * @param {Function} callback a method that takes (value)
+	 * @param {boolean=} excludeWrapCoord whether or not to include
+	 * the final coordinate of LinearRings that wraps the ring in its iteration.
+	 * @example
+	 * var point = { type: 'Point', coordinates: [0, 0] };
+	 * coordEach(point, function(coords) {
+	 *   // coords is equal to [0, 0]
+	 * });
+	 */
+	'use strict';
+
+	function coordEach(layer, callback, excludeWrapCoord) {
+	  var i,
+	      j,
+	      k,
+	      g,
+	      geometry,
+	      stopG,
+	      coords,
+	      geometryMaybeCollection,
+	      wrapShrink = 0,
+	      isGeometryCollection,
+	      isFeatureCollection = layer.type === 'FeatureCollection',
+	      isFeature = layer.type === 'Feature',
+	      stop = isFeatureCollection ? layer.features.length : 1;
+
+	  // This logic may look a little weird. The reason why it is that way
+	  // is because it's trying to be fast. GeoJSON supports multiple kinds
+	  // of objects at its root: FeatureCollection, Features, Geometries.
+	  // This function has the responsibility of handling all of them, and that
+	  // means that some of the `for` loops you see below actually just don't apply
+	  // to certain inputs. For instance, if you give this just a
+	  // Point geometry, then both loops are short-circuited and all we do
+	  // is gradually rename the input until it's called 'geometry'.
+	  //
+	  // This also aims to allocate as few resources as possible: just a
+	  // few numbers and booleans, rather than any temporary arrays as would
+	  // be required with the normalization approach.
+	  for (i = 0; i < stop; i++) {
+
+	    geometryMaybeCollection = isFeatureCollection ? layer.features[i].geometry : isFeature ? layer.geometry : layer;
+	    isGeometryCollection = geometryMaybeCollection.type === 'GeometryCollection';
+	    stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
+
+	    for (g = 0; g < stopG; g++) {
+
+	      geometry = isGeometryCollection ? geometryMaybeCollection.geometries[g] : geometryMaybeCollection;
+	      coords = geometry.coordinates;
+
+	      wrapShrink = excludeWrapCoord && (geometry.type === 'Polygon' || geometry.type === 'MultiPolygon') ? 1 : 0;
+
+	      if (geometry.type === 'Point') {
+	        callback(coords);
+	      } else if (geometry.type === 'LineString' || geometry.type === 'MultiPoint') {
+	        for (j = 0; j < coords.length; j++) callback(coords[j]);
+	      } else if (geometry.type === 'Polygon' || geometry.type === 'MultiLineString') {
+	        for (j = 0; j < coords.length; j++) for (k = 0; k < coords[j].length - wrapShrink; k++) callback(coords[j][k]);
+	      } else if (geometry.type === 'MultiPolygon') {
+	        for (j = 0; j < coords.length; j++) for (k = 0; k < coords[j].length; k++) for (l = 0; l < coords[j][k].length - wrapShrink; l++) callback(coords[j][k][l]);
+	      } else {
+	        throw new Error('Unknown Geometry Type');
+	      }
+	    }
+	  }
+	}
+	module.exports.coordEach = coordEach;
+
+	/**
+	 * Lazily reduce coordinates in any GeoJSON object into a single value,
+	 * similar to how Array.reduce works. However, in this case we lazily run
+	 * the reduction, so an array of all coordinates is unnecessary.
+	 *
+	 * @param {Object} layer any GeoJSON object
+	 * @param {Function} callback a method that takes (memo, value) and returns
+	 * a new memo
+	 * @param {boolean=} excludeWrapCoord whether or not to include
+	 * the final coordinate of LinearRings that wraps the ring in its iteration.
+	 * @param {*} memo the starting value of memo: can be any type.
+	 */
+	function coordReduce(layer, callback, memo, excludeWrapCoord) {
+	  coordEach(layer, function (coord) {
+	    memo = callback(memo, coord);
+	  }, excludeWrapCoord);
+	  return memo;
+	}
+	module.exports.coordReduce = coordReduce;
+
+	/**
+	 * Lazily iterate over property objects in any GeoJSON object, similar to
+	 * Array.forEach.
+	 *
+	 * @param {Object} layer any GeoJSON object
+	 * @param {Function} callback a method that takes (value)
+	 * @example
+	 * var point = { type: 'Feature', geometry: null, properties: { foo: 1 } };
+	 * propEach(point, function(props) {
+	 *   // props is equal to { foo: 1}
+	 * });
+	 */
+	function propEach(layer, callback) {
+	  var i;
+	  switch (layer.type) {
+	    case 'FeatureCollection':
+	      features = layer.features;
+	      for (i = 0; i < layer.features.length; i++) {
+	        callback(layer.features[i].properties);
+	      }
+	      break;
+	    case 'Feature':
+	      callback(layer.properties);
+	      break;
+	  }
+	}
+	module.exports.propEach = propEach;
+
+	/**
+	 * Lazily reduce properties in any GeoJSON object into a single value,
+	 * similar to how Array.reduce works. However, in this case we lazily run
+	 * the reduction, so an array of all properties is unnecessary.
+	 *
+	 * @param {Object} layer any GeoJSON object
+	 * @param {Function} callback a method that takes (memo, coord) and returns
+	 * a new memo
+	 * @param {*} memo the starting value of memo: can be any type.
+	 */
+	function propReduce(layer, callback, memo) {
+	  propEach(layer, function (prop) {
+	    memo = callback(memo, prop);
+	  });
+	  return memo;
+	}
+	module.exports.propReduce = propReduce;
 
 /***/ },
 /* 5 */
@@ -671,307 +478,69 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+	var GeoJsonGenerator = (function () {
+	    function GeoJsonGenerator(options) {
+	        _classCallCheck(this, GeoJsonGenerator);
 
-	var _DataSet2 = __webpack_require__(3);
-
-	var _DataSet3 = _interopRequireDefault(_DataSet2);
-
-	var DATA_SET_KEY = Symbol('_dataSet');
-
-	var DerivativeDataSet = (function (_DataSet) {
-	    function DerivativeDataSet(options) {
-	        var _get2;
-
-	        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	            args[_key - 1] = arguments[_key];
-	        }
-
-	        _classCallCheck(this, DerivativeDataSet);
-
-	        (_get2 = _get(Object.getPrototypeOf(DerivativeDataSet.prototype), 'constructor', this)).call.apply(_get2, [this, options].concat(args));
-	        if (!options) {
-	            throw new Error('Parameters are not defined');
-	        }
-	        var dataSet = this.dataSet = options.dataSet || this.adaptable;
-	        if (!this.adapters && dataSet) {
-	            this.adapters = dataSet.adapters;
-	        }
-	        this._onMainDataSetUpdate = this._onMainDataSetUpdate.bind(this);
-	        dataSet.on('update', this._onMainDataSetUpdate);
-	        this._handleMainDataSetUpdate();
+	        options = options || {};
+	        this.bbox = options.bbox || [-180, 90, 180, -90];
+	        this.precision = options.precision || 6;
 	    }
 
-	    _inherits(DerivativeDataSet, _DataSet);
-
-	    _createClass(DerivativeDataSet, [{
-	        key: 'close',
-	        value: function close() {
-	            _get(Object.getPrototypeOf(DerivativeDataSet.prototype), 'close', this).call(this);
-	            var dataSet = this.dataSet;
-	            dataSet.off('update', this._onMainDataSetUpdate);
-	            delete this._dataSet;
+	    _createClass(GeoJsonGenerator, [{
+	        key: 'round',
+	        value: function round(val, precision) {
+	            precision = precision || this.precision;
+	            return +(+val).toFixed(precision);
 	        }
 	    }, {
-	        key: '_getOptionsValue',
-
-	        /** Returns an options value. */
-	        value: function _getOptionsValue(key, defaultValue) {
-	            var result = _get(Object.getPrototypeOf(DerivativeDataSet.prototype), '_getOptionsValue', this).call(this, key);
-	            if (!result) {
-	                var dataSet = this.dataSet;
-	                if (dataSet) {
-	                    result = dataSet._getOptionsValue(key, defaultValue);
+	        key: 'random',
+	        value: function random(from, to) {
+	            return this.round(from + Math.random() * (to - from));
+	        }
+	    }, {
+	        key: 'randomLng',
+	        value: function randomLng() {
+	            return this.random(this.bbox[0], this.bbox[2]);
+	        }
+	    }, {
+	        key: 'randomLat',
+	        value: function randomLat() {
+	            return this.random(this.bbox[1], this.bbox[3]);
+	        }
+	    }, {
+	        key: 'randomLngLat',
+	        value: function randomLngLat() {
+	            return [this.randomLng(), this.randomLat()];
+	        }
+	    }, {
+	        key: 'randomPoint',
+	        value: function randomPoint() {
+	            return {
+	                type: 'Feature',
+	                geometry: {
+	                    type: 'Point',
+	                    coordinates: this.randomLngLat()
 	                }
+	            };
+	        }
+	    }, {
+	        key: 'randomPoints',
+	        value: function randomPoints(number) {
+	            var result = [];
+	            for (var i = 0; i < number; i++) {
+	                result.push(this.randomPoint());
 	            }
 	            return result;
 	        }
-	    }, {
-	        key: 'dataSet',
-
-	        /** Access to the internal dataset */
-	        set: function (set) {
-	            if (set instanceof _DataSet3['default']) {
-	                this[DATA_SET_KEY] = set;
-	            } else {
-	                delete this[DATA_SET_KEY];
-	            }
-	        },
-	        get: function () {
-	            return this[DATA_SET_KEY];
-	        }
-	    }, {
-	        key: '_onMainDataSetUpdate',
-
-	        /**
-	         * This method is called when the parent dataset is updated.
-	         */
-	        value: function _onMainDataSetUpdate(intent) {
-	            intent.then((function () {
-	                this._handleMainDataSetUpdate();
-	            }).bind(this));
-	        }
-	    }, {
-	        key: '_handleMainDataSetUpdate',
-
-	        /**
-	         * This method should be overloaded in subclasses to define exact behaveour
-	         * of objects when the parent set changes.
-	         */
-	        value: function _handleMainDataSetUpdate() {
-	            this.resources = this.dataSet.resources;
-	        }
 	    }]);
 
-	    return DerivativeDataSet;
-	})(_DataSet3['default']);
+	    return GeoJsonGenerator;
+	})();
 
-	exports['default'] = DerivativeDataSet;
-	module.exports = exports['default'];
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-	var _DataSet = __webpack_require__(3);
-
-	var _DataSet2 = _interopRequireDefault(_DataSet);
-
-	var _DerivativeDataSet2 = __webpack_require__(5);
-
-	var _DerivativeDataSet3 = _interopRequireDefault(_DerivativeDataSet2);
-
-	var DataSetFiltered = (function (_DerivativeDataSet) {
-	    function DataSetFiltered() {
-	        _classCallCheck(this, DataSetFiltered);
-
-	        if (_DerivativeDataSet != null) {
-	            _DerivativeDataSet.apply(this, arguments);
-	        }
-	    }
-
-	    _inherits(DataSetFiltered, _DerivativeDataSet);
-
-	    _createClass(DataSetFiltered, [{
-	        key: '_handleMainDataSetUpdate',
-	        value: function _handleMainDataSetUpdate() {
-	            var filter = this._getOptionsValue('filter');
-	            if (filter) {
-	                this.resources = this.dataSet.resources.filter(filter, this);
-	            } else {
-	                this.resources = this.dataSet.resources;
-	            }
-	        }
-	    }]);
-
-	    return DataSetFiltered;
-	})(_DerivativeDataSet3['default']);
-
-	exports['default'] = DataSetFiltered;
-	module.exports = exports['default'];
-
-/***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	    value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-	var _DerivativeDataSet2 = __webpack_require__(5);
-
-	var _DerivativeDataSet3 = _interopRequireDefault(_DerivativeDataSet2);
-
-	var DataSetPaginated = (function (_DerivativeDataSet) {
-
-	    /** Initializes this paginated data set. */
-
-	    function DataSetPaginated() {
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	            args[_key] = arguments[_key];
-	        }
-
-	        _classCallCheck(this, DataSetPaginated);
-
-	        _get(Object.getPrototypeOf(DataSetPaginated.prototype), 'constructor', this).apply(this, args);
-	        var page = this._getOptionsValue('page', 0);
-	        this.pageIdx = page;
-	        this.pageSize = this._getOptionsValue('pageSize', 10);
-	    }
-
-	    _inherits(DataSetPaginated, _DerivativeDataSet);
-
-	    _createClass(DataSetPaginated, [{
-	        key: 'pagePos',
-
-	        // ----------------------------------------------------------------------
-
-	        /** Returns position of the first element visible in the page */
-	        get: function () {
-	            var result = this.pageIdx * this.pageSize;
-	            return result;
-	        }
-	    }, {
-	        key: 'focusPos',
-
-	        /**
-	         * Activates the page corresponding containing element in the specified
-	         * position.
-	         */
-	        value: function focusPos(idx) {
-	            idx = idx || 0;
-	            idx = Math.max(0, Math.min(this.dataSet.length - 1, idx));
-	            var pageIdx = Math.floor(idx / this.pageSize);
-	            return this.setPageIdx(pageIdx);
-	        }
-	    }, {
-	        key: 'pageIdx',
-
-	        // ----------------------------------------------------------------------
-	        // Page index
-
-	        /** Returns the index of the currently active page. */
-	        get: function () {
-	            return this._pageIdx || 0;
-	        },
-
-	        /** Sets a new page index */
-	        set: function (pageIdx) {
-	            this.setPageIdx(pageIdx);
-	        }
-	    }, {
-	        key: 'setPageIdx',
-
-	        /** Sets a new page index */
-	        value: function setPageIdx(pageIdx) {
-	            pageIdx = pageIdx || 0;
-	            var dataSet = this.dataSet;
-	            var pageSize = this.pageSize;
-	            var size = dataSet.size();
-	            pageIdx = this._pageIdx = Math.max(0, Math.min(pageIdx, this.pageNumber - 1));
-	            var startPos = pageIdx * pageSize;
-	            var endPos = Math.min(size - 1, startPos + pageSize - 1);
-	            var resources = [];
-	            for (var i = startPos; i <= endPos; i++) {
-	                var resource = dataSet.get(i);
-	                resources.push(resource);
-	            }
-	            return this.setResources(resources);
-	        }
-	    }, {
-	        key: 'pageSize',
-
-	        // ----------------------------------------------------------------------
-
-	        /** Sets a new page size */
-	        set: function (pageSize) {
-	            var firstPageItemIdx = this.pagePos;
-	            this._pageSize = pageSize || this.defaultPageSize || 10;
-	            return this.focusPos(firstPageItemIdx);
-	        },
-
-	        /** Returns the current page size */
-	        get: function () {
-	            return this._pageSize || this._getOptionsValue('pageSize') || this.defaultPageSize;
-	        }
-	    }, {
-	        key: 'pageNumber',
-
-	        // ----------------------------------------------------------------------
-
-	        /** Returns the total page number in this data set. */
-	        get: function () {
-	            return Math.ceil(this.dataSet.length / this.pageSize);
-	        }
-	    }, {
-	        key: '_onMainDataSetUpdate',
-
-	        // ----------------------------------------------------------------------
-
-	        /** Updates the list */
-	        value: function _onMainDataSetUpdate(intent) {
-	            return intent.then((function () {
-	                return this.pageSize = this.pageSize;
-	            }).bind(this));
-	        }
-	    }]);
-
-	    return DataSetPaginated;
-	})(_DerivativeDataSet3['default']);
-
-	exports['default'] = DataSetPaginated;
+	exports['default'] = GeoJsonGenerator;
 	module.exports = exports['default'];
 
 /***/ }
