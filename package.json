@@ -1,6 +1,6 @@
 {
   "name": "mosaic-dataset-geo",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Geographic adapters for DataSets. Used to manage GeoJSON entities.",
   "main": "index.js",
   "scripts": {
