@@ -120,26 +120,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _createClass(GeoJsonAdapter, [{
-	        key: 'item',
-
-	        /** getter/setter methods for the "item" property */
-	        get: function () {
-	            return this._item || {};
-	        },
-	        set: function (item) {
-	            this._item = item || {};
-	        }
-	    }, {
-	        key: 'data',
-
-	        /** Returns the data object associated with the underlying data object */
-	        get: function () {
-	            return this.item.data;
-	        },
-	        set: function (data) {
-	            this.setData(data);
-	        }
-	    }, {
 	        key: 'setData',
 	        value: function setData(data) {
 	            var item = this.item;
@@ -150,10 +130,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }
 	    }, {
+	        key: 'item',
+
+	        /** getter/setter methods for the "item" property */
+	        get: function get() {
+	            return this._item || {};
+	        },
+	        set: function set(item) {
+	            this._item = item || {};
+	        }
+	    }, {
+	        key: 'data',
+
+	        /** Returns the data object associated with the underlying data object */
+	        get: function get() {
+	            return this.item.data;
+	        },
+	        set: function set(data) {
+	            this.setData(data);
+	        }
+	    }, {
 	        key: 'boundingBox',
 
 	        /** Returns a bounding box around the underlying item. */
-	        get: function () {
+	        get: function get() {
 	            return _GeoJsonUtils2['default'].getBoundingBox(this.item);
 	        }
 	    }]);
@@ -326,7 +326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	/**
 	 * Lazily iterate over coordinates in any GeoJSON object, similar to
@@ -468,7 +468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 
