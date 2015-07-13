@@ -31,7 +31,7 @@
     "mosaic-adapters": "^0.2.4"
   },
   "dependencies": {
-    "mosaic-dataset": "^0.1.0",
+    "mosaic-dataset": "^0.1.1",
     "turf-extent": "^1.0.4"
   }
 }
