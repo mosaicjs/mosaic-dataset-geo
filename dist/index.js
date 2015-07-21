@@ -99,12 +99,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _GeoJsonUtils = __webpack_require__(2);
 
-	var _GeoJsonUtils2 = _interopRequireDefault(_GeoJsonUtils);
-
 	/**
 	 * This adapters treats all data set as GeoJson objects and provides some
 	 * utility methods.
 	 */
+
+	var _GeoJsonUtils2 = _interopRequireDefault(_GeoJsonUtils);
 
 	var GeoJsonAdapter = (function () {
 
@@ -119,6 +119,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.item = item || options.item;
 	    }
 
+	    /** getter/setter methods for the "item" property */
+
 	    _createClass(GeoJsonAdapter, [{
 	        key: 'setData',
 	        value: function setData(data) {
@@ -129,20 +131,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return item.data = data;
 	            }
 	        }
+
+	        /** Returns a bounding box around the underlying item. */
 	    }, {
 	        key: 'item',
-
-	        /** getter/setter methods for the "item" property */
 	        get: function get() {
 	            return this._item || {};
 	        },
 	        set: function set(item) {
 	            this._item = item || {};
 	        }
-	    }, {
-	        key: 'data',
 
 	        /** Returns the data object associated with the underlying data object */
+	    }, {
+	        key: 'data',
 	        get: function get() {
 	            return this.item.data;
 	        },
@@ -151,8 +153,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    }, {
 	        key: 'boundingBox',
-
-	        /** Returns a bounding box around the underlying item. */
 	        get: function get() {
 	            return _GeoJsonUtils2['default'].getBoundingBox(this.item);
 	        }
@@ -182,12 +182,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _turfExtent = __webpack_require__(3);
 
-	var _turfExtent2 = _interopRequireDefault(_turfExtent);
-
 	/**
 	 * This adapters treats all Data instances as GeoJson objects and provides some
 	 * utility methods.
 	 */
+
+	var _turfExtent2 = _interopRequireDefault(_turfExtent);
 
 	var GeoJsonUtils = (function () {
 	    function GeoJsonUtils() {
@@ -215,14 +215,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	            return bbox;
 	        }
-	    }, {
-	        key: 'isEmptyBox',
 
 	        /**
 	         * Returns <code>true</code> if the specified bounding box is empty.
 	         * 
 	         * @see http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude/8674#8674
 	         */
+	    }, {
+	        key: 'isEmptyBox',
 	        value: function isEmptyBox(box, precision) {
 	            if (!box) return true;
 	            var first = this.round(box[0], precision);
@@ -231,12 +231,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var fourth = this.round(box[3], precision);
 	            return first === third && second === fourth;
 	        }
-	    }, {
-	        key: 'round',
 
 	        /**
 	         * @see http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude/8674#8674
 	         */
+	    }, {
+	        key: 'round',
 	        value: function round(val, precision) {
 	            precision = precision || 6;
 	            return (+val).toFixed(precision);
