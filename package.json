@@ -31,7 +31,7 @@
     "webpack": "^1.9.10"
   },
   "dependencies": {
-    "mosaic-dataset": "^0.1.8",
+    "mosaic-dataset": "^0.1.9",
     "turf-extent": "^1.0.4"
   }
 }
