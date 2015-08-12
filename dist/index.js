@@ -66,7 +66,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _libGeoJsonAdapter2 = _interopRequireDefault(_libGeoJsonAdapter);
 
-	var _libGeoJsonGenerator = __webpack_require__(5);
+	var _libGeoJsonGenerator = __webpack_require__(7);
 
 	var _libGeoJsonGenerator2 = _interopRequireDefault(_libGeoJsonGenerator);
 
@@ -156,6 +156,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        get: function get() {
 	            return _GeoJsonUtils2['default'].getBoundingBox(this.item);
 	        }
+
+	        /** Returns the central point for this item. */
+	    }, {
+	        key: 'center',
+	        get: function get() {
+	            return _GeoJsonUtils2['default'].getCenter(this.item);
+	        }
 	    }]);
 
 	    return GeoJsonAdapter;
@@ -182,12 +189,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _turfExtent = __webpack_require__(3);
 
+	var _turfExtent2 = _interopRequireDefault(_turfExtent);
+
+	var _turfCenter = __webpack_require__(5);
+
 	/**
 	 * This adapters treats all Data instances as GeoJson objects and provides some
 	 * utility methods.
 	 */
 
-	var _turfExtent2 = _interopRequireDefault(_turfExtent);
+	var _turfCenter2 = _interopRequireDefault(_turfCenter);
 
 	var GeoJsonUtils = (function () {
 	    function GeoJsonUtils() {
@@ -195,11 +206,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _createClass(GeoJsonUtils, null, [{
-	        key: 'getBoundingBox',
+	        key: 'getCenter',
+
+	        /**
+	         * Returns the central point for the specified GeoJSON object.
+	         */
+	        value: function getCenter(item) {
+	            var result = [undefined, undefined];
+	            var data = item.data;
+	            if (data && data.geometry) {
+	                result = (0, _turfCenter2['default'])(data.geometry);
+	            }
+	            return result;
+	        }
 
 	        /**
 	         * Returns a bounding box around the underlying data object.
 	         */
+	    }, {
+	        key: 'getBoundingBox',
 	        value: function getBoundingBox(item) {
 	            var bbox;
 	            item.visit({
@@ -468,6 +493,172 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var extent = __webpack_require__(3),
+	    point = __webpack_require__(6);
+
+	/**
+	 * Takes a {@link FeatureCollection} of any type and returns the absolute center point of all features.
+	 *
+	 * @module turf/center
+	 * @category measurement
+	 * @param {FeatureCollection} features a FeatureCollection of any type
+	 * @return {Point} a Point feature at the
+	 * absolute center point of all input features
+	 * @example
+	 * var features = {
+	 *   "type": "FeatureCollection",
+	 *   "features": [
+	 *     {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.522259, 35.4691]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.502754, 35.463455]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.508269, 35.463245]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.516809, 35.465779]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.515372, 35.467072]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.509363, 35.463053]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.511123, 35.466601]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.518547, 35.469327]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.519706, 35.469659]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.517839, 35.466998]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.508678, 35.464942]
+	 *       }
+	 *     }, {
+	 *       "type": "Feature",
+	 *       "properties": {},
+	 *       "geometry": {
+	 *         "type": "Point",
+	 *         "coordinates": [-97.514914, 35.463453]
+	 *       }
+	 *     }
+	 *   ]
+	 * };
+	 *
+	 * var centerPt = turf.center(features);
+	 * centerPt.properties['marker-size'] = 'large';
+	 * centerPt.properties['marker-color'] = '#000';
+	 *
+	 * var resultFeatures = features.features.concat(centerPt);
+	 * var result = {
+	 *   "type": "FeatureCollection",
+	 *   "features": resultFeatures
+	 * };
+	 *
+	 * //=result
+	 */
+
+	module.exports = function (layer, done) {
+	  var ext = extent(layer);
+	  var x = (ext[0] + ext[2]) / 2;
+	  var y = (ext[1] + ext[3]) / 2;
+	  return point([x, y]);
+	};
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	/**
+	 * Takes coordinates and properties (optional) and returns a new {@link Point} feature.
+	 *
+	 * @module turf/point
+	 * @category helper
+	 * @param {number} longitude position west to east in decimal degrees
+	 * @param {number} latitude position south to north in decimal degrees
+	 * @param {Object} properties an Object that is used as the {@link Feature}'s
+	 * properties
+	 * @return {Point} a Point feature
+	 * @example
+	 * var pt1 = turf.point([-75.343, 39.984]);
+	 *
+	 * //=pt1
+	 */
+	'use strict';
+
+	var isArray = Array.isArray || function (arg) {
+	  return Object.prototype.toString.call(arg) === '[object Array]';
+	};
+	module.exports = function (coordinates, properties) {
+	  if (!isArray(coordinates)) throw new Error('Coordinates must be an array');
+	  if (coordinates.length < 2) throw new Error('Coordinates must be at least 2 numbers long');
+	  return {
+	    type: "Feature",
+	    geometry: {
+	      type: "Point",
+	      coordinates: coordinates
+	    },
+	    properties: properties || {}
+	  };
+	};
+
+/***/ },
+/* 7 */
 /***/ function(module, exports) {
 
 	'use strict';
