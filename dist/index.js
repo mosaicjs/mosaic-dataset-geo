@@ -142,7 +142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this._item = item || {};
 	        }
 
-	        /** Returns the data object associated with the underlying data object */
+	        /** Returns the data object associated with the underlying item */
 	    }, {
 	        key: 'data',
 	        get: function get() {
@@ -212,7 +212,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Returns the central point for the specified GeoJSON object.
 	         */
 	        value: function getCenter(item) {
-	            var result = [undefined, undefined];
+	            var result;
 	            var data = item.data;
 	            if (data && data.geometry) {
 	                result = (0, _turfCenter2['default'])(data.geometry);
