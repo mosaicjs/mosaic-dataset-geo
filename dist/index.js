@@ -159,9 +159,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        /** Returns the central point for this item. */
 	    }, {
-	        key: 'center',
+	        key: 'centerPoint',
 	        get: function get() {
 	            return _GeoJsonUtils2['default'].getCenter(this.item);
+	        }
+
+	        /** Returns the coordinates of the center for this item. */
+	    }, {
+	        key: 'center',
+	        get: function get() {
+	            var center = this.centerPoint;
+	            return center.geometry.coordinates;
 	        }
 	    }]);
 
