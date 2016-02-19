@@ -161,15 +161,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	        key: 'centerPoint',
 	        get: function get() {
-	            return _GeoJsonUtils2['default'].getCenter(this.item);
+	            return {
+	                type: 'Point',
+	                geometry: {
+	                    coordinates: this.center
+	                }
+	            };
 	        }
 
 	        /** Returns the coordinates of the center for this item. */
 	    }, {
 	        key: 'center',
 	        get: function get() {
-	            var center = this.centerPoint;
-	            return center.geometry.coordinates;
+	            return _GeoJsonUtils2['default'].getCenter(this.item);
 	        }
 	    }]);
 
@@ -220,12 +224,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * Returns the central point for the specified GeoJSON object.
 	         */
 	        value: function getCenter(item) {
-	            var result;
-	            var data = item.data;
-	            if (data && data.geometry) {
-	                result = (0, _turfCenter2['default'])(data.geometry);
-	            }
+	            var bbox = this.getBoundingBox(item);
+	            var result = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
 	            return result;
+	            //        var result;
+	            //        var data = item.data;
+	            //        if (data && data.geometry) {
+	            //            result = TurfCenter(data.geometry);
+	            //        }
+	            //        return result;
 	        }
 
 	        /**
@@ -251,7 +258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        /**
 	         * Returns <code>true</code> if the specified bounding box is empty.
-	         * 
+	         *
 	         * @see http://gis.stackexchange.com/questions/8650/how-to-measure-the-accuracy-of-latitude-and-longitude/8674#8674
 	         */
 	    }, {
