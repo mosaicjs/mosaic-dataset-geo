@@ -225,14 +225,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	         */
 	        value: function getCenter(item) {
 	            var bbox = this.getBoundingBox(item);
+	            if (!bbox) return;
 	            var result = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
 	            return result;
-	            //        var result;
-	            //        var data = item.data;
-	            //        if (data && data.geometry) {
-	            //            result = TurfCenter(data.geometry);
-	            //        }
-	            //        return result;
 	        }
 
 	        /**
